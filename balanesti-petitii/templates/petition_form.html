@@ -1,0 +1,96 @@
+{% extends "layouts/base.html" %}
+{% block title %}Depune o petiție - Primăria Bălănești{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <div class="text-center mb-4">
+        <div class="pb-section-eyebrow">Formular online</div>
+        <h2 class="pb-section-title">Depune o petiție / sesizare</h2>
+        <div class="pb-divider-accent mx-auto"></div>
+        <p class="text-muted">Câmpurile marcate cu <span class="required-mark">*</span> sunt obligatorii.</p>
+      </div>
+
+      <div class="pb-form-card">
+        <form method="POST" action="{{ url_for('petition_new') }}" enctype="multipart/form-data" class="needs-validation" novalidate>
+
+          <h5 class="mb-3"><i class="bi bi-person-vcard me-2 text-primary"></i>Datele dvs. de contact</h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="nume" class="form-label">Nume și prenume <span class="required-mark">*</span></label>
+              <input type="text" class="form-control" id="nume" name="nume" required
+                     value="{{ form_data.get('nume', '') }}" placeholder="Ex: Maria Popescu">
+              <div class="invalid-feedback">Introduceți numele și prenumele.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="email" class="form-label">Email <span class="required-mark">*</span></label>
+              <input type="email" class="form-control" id="email" name="email" required
+                     value="{{ form_data.get('email', '') }}" placeholder="exemplu@email.com">
+              <div class="invalid-feedback">Introduceți o adresă de email validă.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="telefon" class="form-label">Telefon <span class="required-mark">*</span></label>
+              <input type="tel" class="form-control" id="telefon" name="telefon" required
+                     value="{{ form_data.get('telefon', '') }}" placeholder="06X XXX XXX">
+              <div class="invalid-feedback">Introduceți un număr de telefon.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="adresa" class="form-label">Adresă <span class="required-mark">*</span></label>
+              <input type="text" class="form-control" id="adresa" name="adresa" required
+                     value="{{ form_data.get('adresa', '') }}" placeholder="Strada, numărul casei, satul Bălănești">
+              <div class="invalid-feedback">Introduceți adresa.</div>
+            </div>
+          </div>
+
+          <h5 class="mb-3"><i class="bi bi-exclamation-octagon me-2 text-primary"></i>Detaliile sesizării</h5>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label for="categorie" class="form-label">Categoria problemei <span class="required-mark">*</span></label>
+              <select class="form-select" id="categorie" name="categorie" required>
+                <option value="" disabled {% if not form_data.get('categorie') %}selected{% endif %}>Selectați categoria...</option>
+                {% for c in categorii %}
+                  <option value="{{ c }}" {% if form_data.get('categorie') == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+              </select>
+              <div class="invalid-feedback">Selectați o categorie.</div>
+            </div>
+            <div class="col-md-6">
+              <label for="prioritate" class="form-label">Prioritate <span class="required-mark">*</span></label>
+              <select class="form-select" id="prioritate" name="prioritate" required>
+                <option value="" disabled {% if not form_data.get('prioritate') %}selected{% endif %}>Selectați prioritatea...</option>
+                {% for p in prioritati %}
+                  <option value="{{ p }}" {% if form_data.get('prioritate') == p %}selected{% endif %}>{{ p }}</option>
+                {% endfor %}
+              </select>
+              <div class="invalid-feedback">Selectați o prioritate.</div>
+            </div>
+            <div class="col-12">
+              <label for="descriere" class="form-label">Descrierea problemei <span class="required-mark">*</span></label>
+              <textarea class="form-control" id="descriere" name="descriere" rows="5" required
+                        placeholder="Descrieți cât mai detaliat situația semnalată (locație exactă, de când persistă problema etc.)">{{ form_data.get('descriere', '') }}</textarea>
+              <div class="invalid-feedback">Descrierea este obligatorie.</div>
+            </div>
+            <div class="col-12">
+              <label for="fotografie" class="form-label">Fotografie (opțional)</label>
+              <input type="file" class="form-control" id="fotografie" name="fotografie" accept="image/png, image/jpeg, image/gif">
+              <div class="form-text">Formate acceptate: PNG, JPG, GIF — maximum 5 MB.</div>
+              <img id="previewFotografie" class="pb-photo-preview" alt="Previzualizare fotografie">
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+            <a href="{{ url_for('index') }}" class="text-muted"><i class="bi bi-arrow-left me-1"></i>Înapoi la pagina principală</a>
+            <button type="submit" class="btn btn-pb-primary btn-lg">
+              <i class="bi bi-send-fill me-2"></i>Trimite petiția
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}

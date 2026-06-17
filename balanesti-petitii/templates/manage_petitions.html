@@ -1,0 +1,108 @@
+{% extends "layouts/base.html" %}
+{% block title %}Gestionare petiții - Primăria Bălănești{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+
+  <div class="mb-4">
+    <div class="pb-section-eyebrow">Administrare</div>
+    <h2 class="pb-section-title mb-0">Gestionare petiții și sesizări</h2>
+  </div>
+
+  <!-- Filtre -->
+  <div class="pb-card p-4 mb-4">
+    <form method="GET" action="{{ url_for('manage_petitions') }}" class="row g-3 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label">Categorie</label>
+        <select class="form-select" name="categorie">
+          <option value="">Toate categoriile</option>
+          {% for c in categorii %}
+            <option value="{{ c }}" {% if filtre.categorie == c %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Status</label>
+        <select class="form-select" name="status">
+          <option value="">Toate statusurile</option>
+          {% for s in statusuri %}
+            <option value="{{ s }}" {% if filtre.status == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Caută cetățean</label>
+        <input type="text" class="form-control" name="cetatean" placeholder="Nume, email, telefon sau nr. înregistrare"
+               value="{{ filtre.cetatean }}">
+      </div>
+      <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-pb-primary w-100"><i class="bi bi-funnel me-1"></i>Filtrează</button>
+      </div>
+      {% if filtre.categorie or filtre.status or filtre.cetatean %}
+      <div class="col-12">
+        <a href="{{ url_for('manage_petitions') }}" class="small text-muted"><i class="bi bi-x-circle me-1"></i>Resetează filtrele</a>
+      </div>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Tabel petiții -->
+  <div class="pb-table-wrapper">
+    <div class="p-3 border-bottom bg-white d-flex justify-content-between align-items-center">
+      <h6 class="fw-bold mb-0"><i class="bi bi-list-check me-2 text-primary"></i>{{ petitii | length }} petiții găsite</h6>
+    </div>
+    <div class="table-responsive">
+      <table class="table pb-table mb-0">
+        <thead>
+          <tr>
+            <th>Nr. înregistrare</th>
+            <th>Cetățean</th>
+            <th>Contact</th>
+            <th>Categorie</th>
+            <th>Prioritate</th>
+            <th>Status</th>
+            <th>Data depunerii</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in petitii %}
+          <tr>
+            <td class="fw-semibold">{{ p.registration_number }}</td>
+            <td>{{ p.nume }}</td>
+            <td class="small text-muted">{{ p.email }}<br>{{ p.telefon }}</td>
+            <td>{{ p.categorie }}</td>
+            <td>
+              {% set pr = p.prioritate %}
+              <span class="badge-prioritate
+                {% if pr == 'Scăzută' %}prio-scazuta
+                {% elif pr == 'Medie' %}prio-medie
+                {% elif pr == 'Ridicată' %}prio-ridicata
+                {% elif pr == 'Urgentă' %}prio-urgenta{% endif %}">{{ pr }}</span>
+            </td>
+            <td>
+              {% set s = p.status %}
+              <span class="badge-status
+                {% if s == 'Înregistrată' %}status-inregistrata
+                {% elif s == 'În analiză' %}status-analiza
+                {% elif s == 'În lucru' %}status-lucru
+                {% elif s == 'Rezolvată' %}status-rezolvata
+                {% elif s == 'Respinsă' %}status-respinsa{% endif %}">{{ s }}</span>
+            </td>
+            <td>{{ p.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+            <td>
+              <a href="{{ url_for('petition_details', petition_id=p.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-eye me-1"></i>Vezi
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="8" class="text-center text-muted py-5">Nu există petiții care să corespundă filtrelor selectate.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+{% endblock %}

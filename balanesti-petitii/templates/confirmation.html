@@ -1,0 +1,40 @@
+{% extends "layouts/base.html" %}
+{% block title %}Petiție înregistrată cu succes - Primăria Bălănești{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="pb-card text-center p-5 pb-fade-in" style="border-top: 4px solid var(--pb-green);">
+        <div class="pb-card-icon pb-icon-green mx-auto mb-3" style="width:72px;height:72px;font-size:2rem;">
+          <i class="bi bi-check-lg"></i>
+        </div>
+        <h3 class="pb-section-title">Petiția a fost înregistrată cu succes!</h3>
+        <p class="text-muted">Vă mulțumim, {{ petitie.nume }}. Sesizarea dvs. a fost transmisă către primăria satului Bălănești.</p>
+
+        <div class="bg-light rounded-3 p-4 my-4">
+          <p class="text-muted small mb-1">Numărul dvs. de înregistrare</p>
+          <div class="pb-reg-number">{{ petitie.registration_number }}</div>
+          <button class="btn btn-sm btn-outline-secondary mt-2 pb-copy-reg" data-reg="{{ petitie.registration_number }}">
+            <i class="bi bi-clipboard me-1"></i>Copiază numărul
+          </button>
+        </div>
+
+        <p class="small text-muted mb-4">
+          <i class="bi bi-info-circle me-1"></i>
+          Notați acest număr — îl veți folosi pentru a verifica oricând statusul petiției și răspunsul primăriei.
+        </p>
+
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="{{ url_for('status_check') }}" class="btn btn-pb-primary">
+            <i class="bi bi-search me-2"></i>Verifică statusul acum
+          </a>
+          <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-house-door me-2"></i>Înapoi la pagina principală
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

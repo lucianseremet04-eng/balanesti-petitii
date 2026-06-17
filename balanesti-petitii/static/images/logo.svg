@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Emblemă generică pentru Primăria Bălănești (formă de scut, fără elemente protejate) -->
+  <defs>
+    <linearGradient id="pbShieldBlue" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#123e8f"/>
+      <stop offset="100%" stop-color="#0B3D91"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 2 L58 10 V30 C58 46 47 56 32 62 C17 56 6 46 6 30 V10 Z"
+        fill="url(#pbShieldBlue)" stroke="#ffffff" stroke-width="2"/>
+  <path d="M32 8 L52 14.5 V29 C52 42 43.5 50.5 32 55.5 C20.5 50.5 12 42 12 29 V14.5 Z"
+        fill="#ffffff" opacity="0.08"/>
+  <!-- Deal / câmp -->
+  <path d="M10 38 Q22 30 32 38 Q42 46 54 38 V58 Q44 52 32 56 Q20 60 10 58 Z" fill="#28A745"/>
+  <!-- Soare -->
+  <circle cx="32" cy="22" r="7" fill="#ffffff"/>
+  <g stroke="#ffffff" stroke-width="2" stroke-linecap="round">
+    <line x1="32" y1="8" x2="32" y2="12"/>
+    <line x1="32" y1="32" x2="32" y2="36" opacity="0"/>
+    <line x1="20" y1="22" x2="16" y2="22"/>
+    <line x1="48" y1="22" x2="44" y2="22"/>
+    <line x1="22.8" y1="12.8" x2="20" y2="10"/>
+    <line x1="41.2" y1="12.8" x2="44" y2="10"/>
+  </g>
+</svg>

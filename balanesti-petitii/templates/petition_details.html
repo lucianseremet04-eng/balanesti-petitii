@@ -1,0 +1,135 @@
+{% extends "layouts/base.html" %}
+{% block title %}Petiția {{ petitie.registration_number }} - Primăria Bălănești{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+
+  <p class="mb-3">
+    <a href="{{ url_for('manage_petitions') }}" class="text-decoration-none">
+      <i class="bi bi-arrow-left me-1"></i>Înapoi la lista de petiții
+    </a>
+  </p>
+
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-4">
+    <div>
+      <div class="pb-section-eyebrow">Detalii petiție</div>
+      <h2 class="pb-section-title mb-0">{{ petitie.registration_number }}</h2>
+    </div>
+    {% set s = petitie.status %}
+    <span class="badge-status fs-6
+      {% if s == 'Înregistrată' %}status-inregistrata
+      {% elif s == 'În analiză' %}status-analiza
+      {% elif s == 'În lucru' %}status-lucru
+      {% elif s == 'Rezolvată' %}status-rezolvata
+      {% elif s == 'Respinsă' %}status-respinsa{% endif %}">{{ s }}</span>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Coloana informații cetățean + sesizare -->
+    <div class="col-lg-7">
+      <div class="pb-card p-4 mb-4">
+        <h6 class="fw-bold mb-3"><i class="bi bi-person-vcard me-2 text-primary"></i>Datele cetățeanului</h6>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Nume și prenume</p>
+            <p class="fw-semibold">{{ petitie.nume }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Email</p>
+            <p class="fw-semibold">{{ petitie.email }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Telefon</p>
+            <p class="fw-semibold">{{ petitie.telefon }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Adresă</p>
+            <p class="fw-semibold">{{ petitie.adresa }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pb-card p-4 mb-4">
+        <h6 class="fw-bold mb-3"><i class="bi bi-exclamation-octagon me-2 text-primary"></i>Detaliile sesizării</h6>
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Categorie</p>
+            <p class="fw-semibold">{{ petitie.categorie }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Prioritate</p>
+            {% set pr = petitie.prioritate %}
+            <span class="badge-prioritate
+              {% if pr == 'Scăzută' %}prio-scazuta
+              {% elif pr == 'Medie' %}prio-medie
+              {% elif pr == 'Ridicată' %}prio-ridicata
+              {% elif pr == 'Urgentă' %}prio-urgenta{% endif %}">{{ pr }}</span>
+          </div>
+        </div>
+        <p class="text-muted small mb-0">Descriere</p>
+        <p class="mb-0">{{ petitie.descriere }}</p>
+
+        {% if petitie.fotografie %}
+        <div class="mt-3">
+          <p class="text-muted small mb-1">Fotografie atașată</p>
+          <img src="{{ url_for('static', filename='uploads/' ~ petitie.fotografie) }}"
+               alt="Fotografie sesizare" class="img-fluid rounded-3 border" style="max-height:320px;">
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="pb-card p-4">
+        <h6 class="fw-bold mb-3"><i class="bi bi-clock-history me-2 text-primary"></i>Cronologie</h6>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Data depunerii</p>
+            <p class="fw-semibold">{{ petitie.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+          </div>
+          <div class="col-md-6">
+            <p class="text-muted small mb-0">Ultima actualizare</p>
+            <p class="fw-semibold">{{ petitie.updated_at.strftime('%d.%m.%Y %H:%M') }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Coloana gestionare / răspuns -->
+    <div class="col-lg-5">
+      <div class="pb-card p-4" style="border-top: 4px solid var(--pb-green);">
+        <h6 class="fw-bold mb-3"><i class="bi bi-pencil-square me-2 text-primary"></i>Gestionare petiție</h6>
+
+        <form method="POST" action="{{ url_for('petition_details', petition_id=petitie.id) }}" id="formActualizarePetitie">
+          <div class="mb-3">
+            <label for="status" class="form-label">Schimbă statusul</label>
+            <select class="form-select" id="status" name="status">
+              {% for s in statusuri %}
+                <option value="{{ s }}" {% if petitie.status == s %}selected{% endif %}>{{ s }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="raspuns" class="form-label">Răspuns oficial către cetățean</label>
+            <textarea class="form-control" id="raspuns" name="raspuns" rows="6"
+                      placeholder="Scrieți răspunsul oficial al primăriei...">{{ petitie.raspuns or '' }}</textarea>
+            <div class="form-text">Răspunsul devine vizibil imediat cetățeanului pe pagina de verificare status.</div>
+          </div>
+
+          {% if petitie.data_raspuns %}
+            <p class="small text-muted">
+              <i class="bi bi-check2-circle me-1"></i>Ultimul răspuns transmis pe {{ petitie.data_raspuns.strftime('%d.%m.%Y %H:%M') }}
+            </p>
+          {% endif %}
+
+          <button type="submit" class="btn btn-pb-primary w-100">
+            <i class="bi bi-save me-2"></i>Salvează actualizarea
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+{% endblock %}

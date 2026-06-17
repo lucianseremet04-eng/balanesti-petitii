@@ -1,0 +1,84 @@
+{% extends "layouts/base.html" %}
+{% block title %}Verifică statusul petiției - Primăria Bălănești{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+
+      <div class="text-center mb-4">
+        <div class="pb-section-eyebrow">Urmărire sesizare</div>
+        <h2 class="pb-section-title">Verifică statusul petiției tale</h2>
+        <div class="pb-divider-accent mx-auto"></div>
+      </div>
+
+      <div class="pb-form-card mb-4">
+        <form method="POST" action="{{ url_for('status_check') }}" class="row g-3 align-items-end">
+          <div class="col-md-9">
+            <label for="registration_number" class="form-label">Număr de înregistrare</label>
+            <input type="text" class="form-control" id="registration_number" name="registration_number"
+                   placeholder="Ex: BAL-2026-0007" required>
+          </div>
+          <div class="col-md-3">
+            <button type="submit" class="btn btn-pb-primary w-100">
+              <i class="bi bi-search me-2"></i>Caută
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {% if cautare_efectuata and petitie %}
+        <div class="pb-card p-4 pb-fade-in">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+            <div>
+              <p class="text-muted small mb-1">Număr de înregistrare</p>
+              <div class="pb-reg-number" style="font-size: 1.2rem;">{{ petitie.registration_number }}</div>
+            </div>
+            {% set s = petitie.status %}
+            <span class="badge-status
+              {% if s == 'Înregistrată' %}status-inregistrata
+              {% elif s == 'În analiză' %}status-analiza
+              {% elif s == 'În lucru' %}status-lucru
+              {% elif s == 'Rezolvată' %}status-rezolvata
+              {% elif s == 'Respinsă' %}status-respinsa{% endif %}">
+              {{ petitie.status }}
+            </span>
+          </div>
+
+          <hr>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <p class="text-muted small mb-0">Categorie</p>
+              <p class="fw-semibold">{{ petitie.categorie }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-0">Data depunerii</p>
+              <p class="fw-semibold">{{ petitie.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="text-muted small mb-0">Ultima actualizare</p>
+              <p class="fw-semibold">{{ petitie.updated_at.strftime('%d.%m.%Y %H:%M') }}</p>
+            </div>
+          </div>
+
+          {% if petitie.raspuns %}
+            <div class="alert alert-success mt-2">
+              <h6 class="fw-bold"><i class="bi bi-chat-left-quote-fill me-2"></i>Răspunsul primăriei</h6>
+              <p class="mb-1">{{ petitie.raspuns }}</p>
+              {% if petitie.data_raspuns %}
+                <p class="small text-muted mb-0">Răspuns transmis pe {{ petitie.data_raspuns.strftime('%d.%m.%Y %H:%M') }}</p>
+              {% endif %}
+            </div>
+          {% else %}
+            <div class="alert alert-light border mt-2">
+              <i class="bi bi-hourglass-split me-2"></i>Petiția dvs. este în curs de analiză. Funcționarii primăriei nu au publicat încă un răspuns oficial.
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+{% endblock %}

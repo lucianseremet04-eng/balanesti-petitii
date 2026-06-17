@@ -1,0 +1,165 @@
+{% extends "layouts/base.html" %}
+{% block title %}Dashboard - Primăria Bălănești{% endblock %}
+
+{% block content %}
+<section class="container py-5">
+
+  <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-4">
+    <div>
+      <div class="pb-section-eyebrow">Panou de control</div>
+      <h2 class="pb-section-title mb-0">Dashboard administrator</h2>
+    </div>
+    <a href="{{ url_for('manage_petitions') }}" class="btn btn-pb-primary">
+      <i class="bi bi-folder2-open me-2"></i>Gestionează toate petițiile
+    </a>
+  </div>
+
+  <!-- Carduri statistici -->
+  <div class="row g-4 mb-5">
+    <div class="col-sm-6 col-lg-3">
+      <div class="pb-stat-card pb-stat-total">
+        <i class="bi bi-archive"></i>
+        <div class="pb-stat-number">{{ total }}</div>
+        <div class="pb-stat-label">Total petiții</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="pb-stat-card pb-stat-new">
+        <i class="bi bi-inbox"></i>
+        <div class="pb-stat-number">{{ noi }}</div>
+        <div class="pb-stat-label">Petiții noi</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="pb-stat-card pb-stat-progress">
+        <i class="bi bi-tools"></i>
+        <div class="pb-stat-number">{{ in_lucru }}</div>
+        <div class="pb-stat-label">În lucru / analiză</div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+      <div class="pb-stat-card pb-stat-done">
+        <i class="bi bi-check2-circle"></i>
+        <div class="pb-stat-number">{{ rezolvate }}</div>
+        <div class="pb-stat-label">Rezolvate</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grafice statistici -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-4">
+      <div class="pb-card p-4 h-100">
+        <h6 class="fw-bold mb-3"><i class="bi bi-pie-chart me-2 text-primary"></i>Pe categorii</h6>
+        <canvas id="chartCategorii" height="220"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="pb-card p-4 h-100">
+        <h6 class="fw-bold mb-3"><i class="bi bi-bar-chart me-2 text-primary"></i>Pe priorități</h6>
+        <canvas id="chartPrioritati" height="220"></canvas>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="pb-card p-4 h-100">
+        <h6 class="fw-bold mb-3"><i class="bi bi-graph-up me-2 text-primary"></i>Pe statusuri</h6>
+        <canvas id="chartStatusuri" height="220"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Petiții recente -->
+  <div class="pb-table-wrapper">
+    <div class="p-3 border-bottom bg-white">
+      <h6 class="fw-bold mb-0"><i class="bi bi-clock-history me-2 text-primary"></i>Petiții recente</h6>
+    </div>
+    <div class="table-responsive">
+      <table class="table pb-table mb-0">
+        <thead>
+          <tr>
+            <th>Nr. înregistrare</th>
+            <th>Cetățean</th>
+            <th>Categorie</th>
+            <th>Prioritate</th>
+            <th>Status</th>
+            <th>Data</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in recente %}
+          <tr>
+            <td class="fw-semibold">{{ p.registration_number }}</td>
+            <td>{{ p.nume }}</td>
+            <td>{{ p.categorie }}</td>
+            <td>
+              {% set pr = p.prioritate %}
+              <span class="badge-prioritate
+                {% if pr == 'Scăzută' %}prio-scazuta
+                {% elif pr == 'Medie' %}prio-medie
+                {% elif pr == 'Ridicată' %}prio-ridicata
+                {% elif pr == 'Urgentă' %}prio-urgenta{% endif %}">{{ pr }}</span>
+            </td>
+            <td>
+              {% set s = p.status %}
+              <span class="badge-status
+                {% if s == 'Înregistrată' %}status-inregistrata
+                {% elif s == 'În analiză' %}status-analiza
+                {% elif s == 'În lucru' %}status-lucru
+                {% elif s == 'Rezolvată' %}status-rezolvata
+                {% elif s == 'Respinsă' %}status-respinsa{% endif %}">{{ s }}</span>
+            </td>
+            <td>{{ p.created_at.strftime('%d.%m.%Y') }}</td>
+            <td>
+              <a href="{{ url_for('petition_details', petition_id=p.id) }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-eye"></i>
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="7" class="text-center text-muted py-4">Nu există petiții înregistrate.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+  const culoriPB = ['#0B3D91', '#28A745', '#d68910', '#5b6b8c', '#842029', '#1e7e34'];
+
+  new Chart(document.getElementById('chartCategorii'), {
+    type: 'doughnut',
+    data: {
+      labels: {{ categorii | tojson }},
+      datasets: [{ data: {{ cat_counts | tojson }}, backgroundColor: culoriPB }]
+    },
+    options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10.5 } } } } }
+  });
+
+  new Chart(document.getElementById('chartPrioritati'), {
+    type: 'bar',
+    data: {
+      labels: {{ prioritati | tojson }},
+      datasets: [{ label: 'Petiții', data: {{ prio_counts | tojson }}, backgroundColor: '#0B3D91', borderRadius: 6 }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+    }
+  });
+
+  new Chart(document.getElementById('chartStatusuri'), {
+    type: 'pie',
+    data: {
+      labels: {{ statusuri | tojson }},
+      datasets: [{ data: {{ status_counts | tojson }}, backgroundColor: culoriPB }]
+    },
+    options: { plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10.5 } } } } }
+  });
+</script>
+{% endblock %}

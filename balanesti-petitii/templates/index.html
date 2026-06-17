@@ -1,0 +1,145 @@
+{% extends "layouts/base.html" %}
+{% block title %}Acasă - Portalul de Petiții și Sesizări Bălănești{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="pb-hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7 pb-fade-in">
+        <span class="pb-hero-badge"><i class="bi bi-shield-check"></i> Serviciu public digital</span>
+        <h1 class="display-5">Portalul de Petiții și Sesizări<br>Primăria Bălănești</h1>
+        <p class="lead mt-3">
+          Semnalați gropi în drum, probleme de iluminat, salubrizare sau alte
+          situații din satul Bălănești direct online — fără deplasare la
+          sediul primăriei — și urmăriți modul de soluționare în timp real.
+        </p>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+          <a href="{{ url_for('petition_new') }}" class="btn btn-pb-primary btn-lg">
+            <i class="bi bi-file-earmark-plus me-2"></i>Depune o petiție
+          </a>
+          <a href="{{ url_for('status_check') }}" class="btn btn-pb-outline btn-lg">
+            <i class="bi bi-search me-2"></i>Verifică statusul
+          </a>
+        </div>
+      </div>
+      <div class="col-lg-5 text-center mt-5 mt-lg-0 pb-fade-in">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="p-4 rounded-3" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);">
+              <div class="display-6 fw-bold text-white">{{ total_petitii }}</div>
+              <div class="text-white-50 small">petiții înregistrate</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-4 rounded-3" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);">
+              <div class="display-6 fw-bold text-white">{{ rezolvate }}</div>
+              <div class="text-white-50 small">petiții rezolvate</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CUM FUNCȚIONEAZĂ -->
+<section class="container py-5">
+  <div class="text-center mb-5">
+    <div class="pb-section-eyebrow">Procesul în 3 pași</div>
+    <h2 class="pb-section-title">Cum funcționează platforma</h2>
+    <div class="pb-divider-accent mx-auto"></div>
+  </div>
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="pb-card h-100 p-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="pb-step-num">1</span>
+          <h5 class="mb-0">Completați formularul</h5>
+        </div>
+        <p class="text-muted mb-0">Descrieți problema, alegeți categoria și prioritatea, și — opțional — atașați o fotografie.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="pb-card h-100 p-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="pb-step-num">2</span>
+          <h5 class="mb-0">Primiți un număr unic</h5>
+        </div>
+        <p class="text-muted mb-0">Petiția este înregistrată automat și primiți un număr unic pe care îl puteți folosi pentru verificare.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="pb-card h-100 p-4">
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <span class="pb-step-num">3</span>
+          <h5 class="mb-0">Urmăriți răspunsul</h5>
+        </div>
+        <p class="text-muted mb-0">Funcționarii primăriei analizează cazul și publică un răspuns oficial vizibil pe pagina de status.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORII -->
+<section class="py-5" style="background: var(--pb-white);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="pb-section-eyebrow">Ce putem soluționa</div>
+      <h2 class="pb-section-title">Categorii de sesizări</h2>
+      <div class="pb-divider-accent mx-auto"></div>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4 col-lg-2">
+        <div class="pb-card text-center h-100 p-3">
+          <div class="pb-card-icon pb-icon-blue mx-auto"><i class="bi bi-cone-striped"></i></div>
+          <p class="fw-semibold mb-0 small">Gropi în drum</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <div class="pb-card text-center h-100 p-3">
+          <div class="pb-card-icon pb-icon-blue mx-auto"><i class="bi bi-lightbulb"></i></div>
+          <p class="fw-semibold mb-0 small">Iluminat stradal</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <div class="pb-card text-center h-100 p-3">
+          <div class="pb-card-icon pb-icon-green mx-auto"><i class="bi bi-trash3"></i></div>
+          <p class="fw-semibold mb-0 small">Salubrizare</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <div class="pb-card text-center h-100 p-3">
+          <div class="pb-card-icon pb-icon-blue mx-auto"><i class="bi bi-bug"></i></div>
+          <p class="fw-semibold mb-0 small">Câini vagabonzi</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <div class="pb-card text-center h-100 p-3">
+          <div class="pb-card-icon pb-icon-green mx-auto"><i class="bi bi-tree"></i></div>
+          <p class="fw-semibold mb-0 small">Spații verzi</p>
+        </div>
+      </div>
+      <div class="col-md-4 col-lg-2">
+        <div class="pb-card text-center h-100 p-3">
+          <div class="pb-card-icon pb-icon-blue mx-auto"><i class="bi bi-three-dots"></i></div>
+          <p class="fw-semibold mb-0 small">Alte probleme</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="container py-5">
+  <div class="pb-card p-5 text-center" style="border-top: 4px solid var(--pb-green);">
+    <h3 class="pb-section-title mb-2">Ați observat o problemă în sat?</h3>
+    <p class="text-muted mb-4">Vocea dvs. contează — sesizarea durează doar câteva minute.</p>
+    <a href="{{ url_for('petition_new') }}" class="btn btn-pb-primary btn-lg">
+      <i class="bi bi-send-fill me-2"></i>Depune o petiție acum
+    </a>
+  </div>
+</section>
+
+{% endblock %}
