@@ -1,26 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-app.py
-------
-Portalul de Petiții și Sesizări - Primăria Bălănești, raionul Nisporeni.
 
-Aplicație Flask + SQLAlchemy + SQLite pentru:
-    - cetățeni: depunere petiții online, verificare status după numărul de
-      înregistrare;
-    - funcționari: autentificare, dashboard cu statistici, gestionarea
-      (vizualizare / filtrare / schimbare status) și răspuns la petiții.
-
-Pornire rapidă:
-    python -m venv venv
-    source venv/bin/activate        (Windows: venv\\Scripts\\activate)
-    pip install -r requirements.txt
-    python app.py
-    -> aplicația pornește pe http://127.0.0.1:5000
-
-Cont implicit de administrator (creat automat la prima rulare):
-    utilizator: admin
-    parolă:     parola123
-"""
 
 import os
 import uuid
